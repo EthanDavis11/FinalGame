@@ -15,11 +15,14 @@ import org.newdawn.slick.state.transition.FadeOutTransition;
 public class MainGame extends BasicGameState {
     Image Background,floor;
     
-    Rectangle ground;
+    Rectangle ground, finish;
 
-    SpriteSheet spriteID,spriteRR,spriteRL,spriteJ,spriteF;
-    Animation i,rr,rl,j,f;
+    SpriteSheet spriteID,spriteRR,spriteRL,spriteJ,spriteF,spriteH;
+    Animation i,rr,rl,j,f,H;
+    SpriteSheet spriteIDE,spriteRRE,spriteRLE,spriteJE,spriteFE,spriteHE;
+    Animation iE,rrE,rlE,jE,fE,HE;
     MainCharacter Franklen;
+    Enemy Bob;
 
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
     
@@ -38,12 +41,39 @@ public class MainGame extends BasicGameState {
     spriteF = new SpriteSheet("Images/Free/Main Characters/Pink Man/Fall (32x32).png",32,32);
     f = new Animation(spriteF,50);
     
+    spriteH = new SpriteSheet("Images/Free/Main Characters/Pink Man/Hit (32x32).png",32,32);
+    H = new Animation(spriteH,50);
+    //
+    
+    spriteIDE = new SpriteSheet("Images/Free/Main Characters/Mask Dude/Idle (32x32).png",32,32);
+    iE = new Animation(spriteIDE,50);
+    
+    spriteRRE = new SpriteSheet("Images/Free/Main Characters/Mask Dude/Run (32x32).png",32,32);
+    rrE = new Animation(spriteRRE,50);
+    
+    spriteRLE = new SpriteSheet("Images/Free/Main Characters/Mask Dude/Run (32x32).png",32,32);
+    rlE = new Animation(spriteRLE,50);
+    
+    spriteJE = new SpriteSheet("Images/Free/Main Characters/Mask Dude/Jump (32x32).png",32,32);
+    jE = new Animation(spriteJE,50);
+    
+    spriteFE = new SpriteSheet("Images/Free/Main Characters/Mask Dude/Fall (32x32).png",32,32);
+    fE = new Animation(spriteFE,50);
+    
+    spriteHE = new SpriteSheet("Images/Free/Main Characters/Mask Dude/Hit (32x32).png",32,32);
+    HE = new Animation(spriteHE,50);
+    
+    //
     Background=new Image("Images/Free/Background/Blue.png");
     floor=new Image("Images/Free/Terrain/Floor1.png");
     
-    Franklen = new MainCharacter(100,50,10,1,10,500,i,rr,rl,j,f,false,false);
+    Franklen = new MainCharacter(100,50,10,2,10,500,i,rr,rl,j,f,H,false,false,true,true);
+    
+    Bob = new Enemy(100,50,10,1,500,500,iE,rrE,rlE,jE,fE,HE,false,false,true,true);
     
     ground = new Rectangle(0,552,805,48);
+    
+    finish = new Rectangle(780,512,25,40);
     }
 
     public void update(GameContainer gc, StateBasedGame sbg, int i) throws SlickException { 
@@ -59,12 +89,47 @@ public class MainGame extends BasicGameState {
         
             Franklen.CheckMove(gc);
             
+            Bob.CheckMove();
+            
             if(ground.getY()<=Franklen.getYP()+32){
                 Franklen.setGround(true);
             }
             else{
                 Franklen.setGround(false);
             }
+            
+            if(ground.getY()<=Bob.getYP()+32){
+                Bob.setGround(true);
+            }
+            else{
+               Bob.setGround(false);
+            }
+            
+            if(Bob.seePlayer(Franklen)==true) Bob.MoveToPlayer(Franklen);
+            
+            if(Bob.getHitBox().intersects(Franklen.getHitBox())&&Bob.getHitBox().getX()<Franklen.getHitBox().getX()&&Bob.getHitBox().getY()==Franklen.getHitBox().getY()){
+                System.out.println("Hit1");
+                System.out.println(Bob.getHitBox().getX());
+                System.out.println(Franklen.getHitBox().getX());
+                Franklen.hit();
+            }
+            
+            else if(Bob.getHitBox().intersects(Franklen.getHitBox())&&Bob.getHitBox().getX()>Franklen.getHitBox().getX()&&Bob.getHitBox().getY()==Franklen.getHitBox().getY()){
+                System.out.println("Hit2");
+                System.out.println(Bob.getHitBox().getX());
+                System.out.println(Franklen.getHitBox().getX());
+                Franklen.hit2();
+            }
+            
+            if(Bob.getHitBox().intersects(Franklen.getHitBox())&&Bob.getHitBox().getY()>Franklen.getHitBox().getY()){
+                Franklen.setVel(-15);
+                Franklen.jump();
+            }
+            
+            if(finish.intersects(Franklen.getHitBox())){
+                sbg.enterState(1, new FadeOutTransition(), new FadeInTransition());
+            }
+            
         }
     
         
@@ -84,8 +149,17 @@ public class MainGame extends BasicGameState {
         }
         
     g.setColor(Color.yellow);
+
+    
+    g.fill(finish);
     
     Franklen.getAnimation().draw(Franklen.getXP(),Franklen.getYP());
+    
+    Bob.getAnimation().draw(Bob.getXP(),Bob.getYP());
+    
+    //g.fill(Franklen.getHitBox());
+    
+    //g.fill(Bob.getHitBox());
     
     }
     
