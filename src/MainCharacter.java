@@ -29,37 +29,37 @@ public class MainCharacter extends Character {
                 YP+=speed;
             }
         
-             if (in.isKeyDown(Input.KEY_A)&&in.isKeyPressed(Input.KEY_SPACE)&&jump==false&&ground==true&&canmove==true&&canmove2==true){
+             if (in.isKeyDown(Input.KEY_A)&&in.isKeyPressed(Input.KEY_SPACE)&&jump==false&&ground==true&&canmove==true&&canmove2==true&&XP>=0){
                 vel-=25;
                 jump=true;
                 XP -= speed;
                 Ani = j;
             }
              
-             else if (in.isKeyDown(Input.KEY_D)&&in.isKeyPressed(Input.KEY_SPACE)&&jump==false&&ground==true&&canmove==true&&canmove2==true){
+             else if (in.isKeyDown(Input.KEY_D)&&in.isKeyPressed(Input.KEY_SPACE)&&jump==false&&ground==true&&canmove==true&&canmove2==true&&XP<=790){
                 vel-=25;
                 jump=true;
                 XP += speed;
                 Ani = j;
             }
             
-           else if (in.isKeyDown(Input.KEY_D)&&ground==true&&canmove==true&&canmove2==true) {
+           else if (in.isKeyDown(Input.KEY_D)&&ground==true&&canmove==true&&canmove2==true&&XP<=790) {
                 XP += speed;
                 Ani = rr;
                 
             }
             
-          else  if (in.isKeyDown(Input.KEY_D)&&ground==false&&canmove==true&&canmove2==true) {
+          else  if (in.isKeyDown(Input.KEY_D)&&ground==false&&canmove==true&&canmove2==true&&XP<=790) {
                 XP += speed;
                 Ani = f;
                 
             }
         
-          else  if (in.isKeyDown(Input.KEY_A)&&ground==true&&canmove==true&&canmove2==true) {
+          else  if (in.isKeyDown(Input.KEY_A)&&ground==true&&canmove==true&&canmove2==true&&XP>=0) {
                 XP -= speed;
                 Ani = rl;
             }
-          else  if (in.isKeyDown(Input.KEY_A)&&ground==false&&canmove==true&&canmove2==true) {
+          else  if (in.isKeyDown(Input.KEY_A)&&ground==false&&canmove==true&&canmove2==true&&XP>=0) {
                 XP -= speed;
                 Ani = f;
             }
@@ -114,7 +114,8 @@ public class MainCharacter extends Character {
     }
     
     public void Hit(){
-        XP+=vel2;
+        if(XP<=790)
+          XP+=vel2;
         vel2--;
         Hitbox.setX(XP);
         if(vel2==0){
@@ -124,6 +125,7 @@ public class MainCharacter extends Character {
         
     }
     public void Hit2(){
+        if(XP>=0)
         XP-=vel3;
         vel3--;
         Hitbox.setX(XP);
